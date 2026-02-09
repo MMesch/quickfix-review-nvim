@@ -1,11 +1,13 @@
 # quickfix-review.nvim
 
-A lightweight code review system for Neovim using the built-in quickfix list and signs.
+A lightweight code review system for Neovim using the built-in quickfix list and signs. You can use it to annotate files or git diffs in neovim with comments of varying type and export them for an AI agent (see screencast below).
 
-## Why this tool?
+## Comparison to other tools
 
-- **Works on normal files and diffs** - Most code review tools only work on diff views. This plugin lets you annotate any file, whether you're reviewing a PR diff or reading through a codebase.
-- **Lightweight, no dependencies** - Uses Neovim's built-in quickfix window and sign column. No external dependencies, but integrates seamlessly with diffview.nvim, fugitive, and other diff tools.
+This tool was inspired by:
+
+- [tuicr](https://github.com/agavra/tuicr/), in particular the different comment types and report structure. Many thanks for that. It has a great interface but I wanted something integrated into my editor (keeping LSPs etc), and also a solution that allows me to review entire files and not diffs.
+- [Review.nvim](https://github.com/georgeguimaraes/review.nvim), a nice nvim version of tuicr. I wanted a lighter weight solution that also works for reviewing non-diff files.I therefore decided to use the quickfix mechanics and the sign column for this plugin.
 
 ## Screencast
 
