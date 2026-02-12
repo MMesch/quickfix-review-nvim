@@ -31,15 +31,17 @@ function M.setup_test_environment()
   quickfix_review.setup({
     signs = {
       issue = { text = '!', texthl = 'DiagnosticError' },
-      suggestion = { text = '?', texthl = 'DiagnosticWarn' },
+      suggestion = { text = 'S', texthl = 'DiagnosticWarn' },
       note = { text = 'N', texthl = 'DiagnosticInfo' },
       praise = { text = '+', texthl = 'DiagnosticHint' },
       question = { text = 'Q', texthl = 'DiagnosticInfo' },
+      insight = { text = 'I', texthl = 'DiagnosticHint' },
       issue_continuation = { text = '|', texthl = 'DiagnosticError' },
       suggestion_continuation = { text = '|', texthl = 'DiagnosticWarn' },
       note_continuation = { text = '|', texthl = 'DiagnosticInfo' },
       praise_continuation = { text = '|', texthl = 'DiagnosticHint' },
       question_continuation = { text = '|', texthl = 'DiagnosticInfo' },
+      insight_continuation = { text = '|', texthl = 'DiagnosticHint' },
     },
     keymaps = {
       add_issue = false,

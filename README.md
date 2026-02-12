@@ -15,7 +15,7 @@ This tool was inspired by:
 
 ## Features
 
-- **Five comment types**: ISSUE, SUGGESTION, NOTE, PRAISE, QUESTION - each with distinct signs
+- **Six comment types**: ISSUE, SUGGESTION, NOTE, PRAISE, QUESTION, INSIGHT - each with distinct signs
 - **Visual gutter signs**: See review comments at a glance
 - **Diff buffer support**: Works also on diffbuffers
 - **Export to markdown**: Share reviews with formatted output
@@ -49,7 +49,7 @@ use {
 ## Quick Start
 
 1. Open a file to review
-2. Press `<leader>ci` to add an ISSUE comment (or `cs`/`cn`/`cp`/`cq` for other types)
+2. Press `<leader>ci` to add an ISSUE comment (or `cs`/`cn`/`cp`/`cq`/`ck` for other types)
 3. Enter your comment text
 4. Use `]r` and `[r` to navigate between comments
 5. Press `<leader>ce` to export the review to markdown
@@ -72,10 +72,11 @@ require('quickfix-review').setup({
   -- Sign definitions
   signs = {
     issue = { text = '⚠', texthl = 'DiagnosticError' },
-    suggestion = { text = '💡', texthl = 'DiagnosticWarn' },
+    suggestion = { text = '💭', texthl = 'DiagnosticWarn' },
     note = { text = '📝', texthl = 'DiagnosticInfo' },
     praise = { text = '✨', texthl = 'DiagnosticHint' },
     question = { text = '?', texthl = 'DiagnosticInfo' },
+    insight = { text = '💡', texthl = 'DiagnosticHint' },
   },
 
   -- Keymaps (set to false to disable)
@@ -85,6 +86,7 @@ require('quickfix-review').setup({
     add_note = '<leader>cn',
     add_praise = '<leader>cp',
     add_question = '<leader>cq',
+    add_insight = '<leader>ck',
     delete_comment = '<leader>cd',
     view = '<leader>cv',
     export = '<leader>ce',

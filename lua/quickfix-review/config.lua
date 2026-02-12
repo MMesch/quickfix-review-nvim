@@ -15,22 +15,24 @@ M.defaults = {
   -- Sign definitions
   signs = {
     issue = { text = '⚠', texthl = 'DiagnosticError' },
-    suggestion = { text = '💡', texthl = 'DiagnosticWarn' },
+    suggestion = { text = '💭', texthl = 'DiagnosticWarn' },
     note = { text = '📝', texthl = 'DiagnosticInfo' },
     praise = { text = '✨', texthl = 'DiagnosticHint' },
     question = { text = '?', texthl = 'DiagnosticInfo' },
+    insight = { text = '💡', texthl = 'DiagnosticHint' },
     -- Continuation signs for multiline comments (vertical bars)
     issue_continuation = { text = '│', texthl = 'DiagnosticError' },
     suggestion_continuation = { text = '│', texthl = 'DiagnosticWarn' },
     note_continuation = { text = '│', texthl = 'DiagnosticInfo' },
     praise_continuation = { text = '│', texthl = 'DiagnosticHint' },
     question_continuation = { text = '│', texthl = 'DiagnosticInfo' },
+    insight_continuation = { text = '│', texthl = 'DiagnosticHint' },
   },
 
   -- Export format strings
   export = {
     header = '# Code Review\n\n',
-    type_legend = 'Comment types: ISSUE (problems to fix), SUGGESTION (improvements), NOTE (observations), PRAISE (positive feedback), QUESTION (clarification needed)\n',
+    type_legend = 'Comment types: ISSUE (problems to fix), SUGGESTION (improvements), NOTE (observations), PRAISE (positive feedback), QUESTION (clarification needed), INSIGHT (useful observations)\n',
     item_format = '%d. **[%s]** `%s:%d` - %s',
   },
 
@@ -41,6 +43,7 @@ M.defaults = {
     add_note = '<leader>cn',
     add_praise = '<leader>cp',
     add_question = '<leader>cq',
+    add_insight = '<leader>ck',
     delete_comment = '<leader>cd',
     export = '<leader>ce',
     clear = '<leader>cc',
@@ -66,7 +69,7 @@ function M.setup(opts)
   -- Ensure continuation signs are defined (use defaults if not provided)
   local highlights = {
     issue = 'DiagnosticError', suggestion = 'DiagnosticWarn',
-    note = 'DiagnosticInfo', praise = 'DiagnosticHint', question = 'DiagnosticInfo'
+    note = 'DiagnosticInfo', praise = 'DiagnosticHint', question = 'DiagnosticInfo', insight = 'DiagnosticHint'
   }
   for t, hl in pairs(highlights) do
     local key = t .. '_continuation'

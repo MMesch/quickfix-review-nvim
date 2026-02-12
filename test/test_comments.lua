@@ -81,6 +81,16 @@ assert.run_test('add QUESTION comment', function()
   assert.matches(list[1].text, '%[QUESTION%]', 'comment type')
 end)
 
+assert.run_test('add INSIGHT comment', function()
+  vim.fn.setqflist({})
+  vim.fn.cursor(8, 1)
+  qf.add_comment('INSIGHT')
+
+  local list = vim.fn.getqflist()
+  assert.length(list, 1, 'quickfix list length')
+  assert.matches(list[1].text, '%[INSIGHT%]', 'comment type')
+end)
+
 assert.run_test('delete single line comment', function()
   vim.fn.setqflist({})
   vim.fn.cursor(5, 1)
