@@ -6,8 +6,8 @@ M.defaults = {
   -- Storage file path for saving/loading reviews
   storage_file = vim.fn.stdpath('data') .. '/quickfix-review.json',
 
-  -- Default export filename
-  export_file = 'quickfix-review.md',
+  -- Default export filename (nil = clipboard only, set to 'quickfix-review.md' to also save to file)
+  export_file = nil,
 
   -- Prompt to clear comments when file changes on disk
   prompt_on_file_change = false,
