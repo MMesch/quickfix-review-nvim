@@ -17,16 +17,16 @@ end
 -- Store sign configuration for extmark use
 M.sign_config = {}
 
--- Priority map for sign stacking (higher = shown first/leftmost)
+-- Priority map for sign stacking (lower than git signs which typically use 6-10)
 local SIGN_PRIORITY = {
-  issue = 100,
-  suggestion = 90,
-  note = 80,
-  praise = 70,
-  issue_continuation = 60,
-  suggestion_continuation = 50,
-  note_continuation = 40,
-  praise_continuation = 30,
+  issue = 5,
+  suggestion = 4,
+  note = 3,
+  praise = 2,
+  issue_continuation = 1,
+  suggestion_continuation = 1,
+  note_continuation = 1,
+  praise_continuation = 1,
 }
 
 -- Initialize signs based on configuration
