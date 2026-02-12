@@ -64,6 +64,22 @@ For faster workflow, use the cycling feature:
 
 The current comment type is shown in the status message.
 
+### Running Tests
+
+To run the test suite:
+
+```bash
+nvim --headless -c 'lua dofile("test/run.lua")' -c 'qa!'
+```
+
+The tests will:
+- Verify all comment types work correctly
+- Check sign placement and parsing
+- Test add/delete functionality
+- Validate persistence (save/load)
+
+**Note**: The test output includes a "Plugin version check" line confirming the current plugin version is being tested.
+
 ## Configuration
 
 All options are optional. Here's the full configuration with defaults:
