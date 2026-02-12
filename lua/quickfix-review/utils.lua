@@ -1,7 +1,7 @@
 -- Utility functions for quickfix-review.nvim
 local M = {}
 
-local COMMENT_TYPES = {'issue', 'suggestion', 'note', 'praise'}
+local COMMENT_TYPES = {'issue', 'suggestion', 'note', 'praise', 'question'}
 
 -- Namespace for extmarks (lazy initialized)
 local ns_id = nil
@@ -23,10 +23,12 @@ local SIGN_PRIORITY = {
   suggestion = 4,
   note = 3,
   praise = 2,
+  question = 2,
   issue_continuation = 1,
   suggestion_continuation = 1,
   note_continuation = 1,
   praise_continuation = 1,
+  question_continuation = 1,
 }
 
 -- Initialize signs based on configuration

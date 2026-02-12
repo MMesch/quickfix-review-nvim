@@ -15,7 +15,7 @@ This tool was inspired by:
 
 ## Features
 
-- **Four comment types**: ISSUE, SUGGESTION, NOTE, PRAISE - each with distinct signs
+- **Five comment types**: ISSUE, SUGGESTION, NOTE, PRAISE, QUESTION - each with distinct signs
 - **Visual gutter signs**: See review comments at a glance
 - **Diff buffer support**: Works also on diffbuffers
 - **Export to markdown**: Share reviews with formatted output
@@ -49,7 +49,7 @@ use {
 ## Quick Start
 
 1. Open a file to review
-2. Press `<leader>ci` to add an ISSUE comment (or `cs`/`cn`/`cp` for other types)
+2. Press `<leader>ci` to add an ISSUE comment (or `cs`/`cn`/`cp`/`cq` for other types)
 3. Enter your comment text
 4. Use `]r` and `[r` to navigate between comments
 5. Press `<leader>ce` to export the review to markdown

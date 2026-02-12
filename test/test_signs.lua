@@ -38,12 +38,13 @@ local function get_sign_name_on_line(bufnr, lnum)
     if not sign_text then return nil end
     -- Trim whitespace from sign_text (Neovim pads to 2 cells)
     sign_text = sign_text:gsub('%s+$', ''):gsub('^%s+', '')
-    -- Map sign text back to sign name (test config uses ASCII: !, ?, N, +, |)
+    -- Map sign text back to sign name (test config uses ASCII: !, ?, N, +, Q, |)
     local sign_mapping = {
       ['!'] = 'review_issue',
       ['?'] = 'review_suggestion',
       ['N'] = 'review_note',
       ['+'] = 'review_praise',
+      ['Q'] = 'review_question',
     }
     if sign_text == '|' then
       -- Check highlight to determine continuation type
@@ -192,11 +193,14 @@ assert.run_test('different comment types use correct signs', function()
   qf.add_comment('NOTE')
   vim.fn.cursor(8, 1)
   qf.add_comment('PRAISE')
+  vim.fn.cursor(10, 1)
+  qf.add_comment('QUESTION')
 
   assert.equals(get_sign_name_on_line(bufnr, 2), 'review_issue', 'issue sign')
   assert.equals(get_sign_name_on_line(bufnr, 4), 'review_suggestion', 'suggestion sign')
   assert.equals(get_sign_name_on_line(bufnr, 6), 'review_note', 'note sign')
   assert.equals(get_sign_name_on_line(bufnr, 8), 'review_praise', 'praise sign')
+  assert.equals(get_sign_name_on_line(bufnr, 10), 'review_question', 'question sign')
 end)
 
 test_helper.cleanup_test_environment()

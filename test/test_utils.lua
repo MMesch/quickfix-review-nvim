@@ -31,6 +31,11 @@ assert.run_test('parse_comment_type extracts PRAISE', function()
   assert.equals(result, 'PRAISE', 'parse PRAISE')
 end)
 
+assert.run_test('parse_comment_type extracts QUESTION', function()
+  local result = utils.parse_comment_type('[QUESTION] Some text')
+  assert.equals(result, 'QUESTION', 'parse QUESTION')
+end)
+
 assert.run_test('parse_comment_type handles multiline format', function()
   local result = utils.parse_comment_type('[ISSUE:L3-7] Some text')
   assert.equals(result, 'ISSUE', 'parse multiline ISSUE')

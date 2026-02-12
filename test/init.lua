@@ -34,10 +34,12 @@ function M.setup_test_environment()
       suggestion = { text = '?', texthl = 'DiagnosticWarn' },
       note = { text = 'N', texthl = 'DiagnosticInfo' },
       praise = { text = '+', texthl = 'DiagnosticHint' },
+      question = { text = 'Q', texthl = 'DiagnosticInfo' },
       issue_continuation = { text = '|', texthl = 'DiagnosticError' },
       suggestion_continuation = { text = '|', texthl = 'DiagnosticWarn' },
       note_continuation = { text = '|', texthl = 'DiagnosticInfo' },
       praise_continuation = { text = '|', texthl = 'DiagnosticHint' },
+      question_continuation = { text = '|', texthl = 'DiagnosticInfo' },
     },
     keymaps = {
       add_issue = false,

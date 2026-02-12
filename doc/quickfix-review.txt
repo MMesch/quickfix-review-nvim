@@ -23,7 +23,7 @@ regular files as well as diff buffers from diffview.nvim, fugitive, and
 similar plugins.
 
 Features:
-- Four comment types: ISSUE, SUGGESTION, NOTE, PRAISE
+- Five comment types: ISSUE, SUGGESTION, NOTE, PRAISE, QUESTION
 - Visual signs in the gutter for each comment type
 - Export reviews to markdown format
 - Save and load reviews to/from disk
@@ -77,7 +77,7 @@ options are optional; defaults are shown below.
       -- Export format strings
       export = {
         header = 'I reviewed your code and have the following comments...',
-        type_legend = 'Comment types: ISSUE, SUGGESTION, NOTE, PRAISE',
+        type_legend = 'Comment types: ISSUE, SUGGESTION, NOTE, PRAISE, QUESTION',
         item_format = '%d. **[%s]** `%s:%d` - %s',
       },
 

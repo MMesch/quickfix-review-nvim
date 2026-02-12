@@ -18,17 +18,19 @@ M.defaults = {
     suggestion = { text = '💡', texthl = 'DiagnosticWarn' },
     note = { text = '📝', texthl = 'DiagnosticInfo' },
     praise = { text = '✨', texthl = 'DiagnosticHint' },
+    question = { text = '?', texthl = 'DiagnosticInfo' },
     -- Continuation signs for multiline comments (vertical bars)
     issue_continuation = { text = '│', texthl = 'DiagnosticError' },
     suggestion_continuation = { text = '│', texthl = 'DiagnosticWarn' },
     note_continuation = { text = '│', texthl = 'DiagnosticInfo' },
     praise_continuation = { text = '│', texthl = 'DiagnosticHint' },
+    question_continuation = { text = '│', texthl = 'DiagnosticInfo' },
   },
 
   -- Export format strings
   export = {
     header = '# Code Review\n\n',
-    type_legend = 'Comment types: ISSUE (problems to fix), SUGGESTION (improvements), NOTE (observations), PRAISE (positive feedback)\n',
+    type_legend = 'Comment types: ISSUE (problems to fix), SUGGESTION (improvements), NOTE (observations), PRAISE (positive feedback), QUESTION (clarification needed)\n',
     item_format = '%d. **[%s]** `%s:%d` - %s',
   },
 
@@ -38,6 +40,7 @@ M.defaults = {
     add_suggestion = '<leader>cs',
     add_note = '<leader>cn',
     add_praise = '<leader>cp',
+    add_question = '<leader>cq',
     delete_comment = '<leader>cd',
     export = '<leader>ce',
     clear = '<leader>cc',
@@ -63,7 +66,7 @@ function M.setup(opts)
   -- Ensure continuation signs are defined (use defaults if not provided)
   local highlights = {
     issue = 'DiagnosticError', suggestion = 'DiagnosticWarn',
-    note = 'DiagnosticInfo', praise = 'DiagnosticHint'
+    note = 'DiagnosticInfo', praise = 'DiagnosticHint', question = 'DiagnosticInfo'
   }
   for t, hl in pairs(highlights) do
     local key = t .. '_continuation'

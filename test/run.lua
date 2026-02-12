@@ -2,6 +2,8 @@
 -- Usage: nvim --headless -c 'lua dofile("test/run.lua")' -c 'qa!'
 
 print('Running quickfix-review tests...')
+print('Working directory:', vim.fn.getcwd())
+print('Plugin version check:', vim.fn.readfile('lua/quickfix-review/config.lua', '', 1)[1])
 print(string.rep('=', 50))
 
 -- Track totals across all test files

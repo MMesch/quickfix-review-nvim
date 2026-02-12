@@ -15,6 +15,12 @@ Check the exit code to determine pass/fail:
 nvim --headless -c 'lua dofile("test/run.lua")' -c 'qa!' && echo "PASSED" || echo "FAILED"
 ```
 
+**Important**: The tests add the current directory to the runtime path to ensure the local plugin version is loaded. This is necessary to test changes to the plugin code.
+
+### Verifying Plugin Version
+
+The test output includes a "Plugin version check" line that shows the first line of the config file. This confirms that the current directory's plugin is being tested, not an installed version.
+
 ### Run Individual Test Files
 
 ```bash
