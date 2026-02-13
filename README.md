@@ -11,7 +11,8 @@ This tool was inspired by:
 
 ## Screencast
 
-[Screencast From 2026-02-09 17-45-58.webm](https://github.com/user-attachments/assets/2c79fa02-737e-4971-9282-f62b8b596a58)
+[Screencast From 2026-02-13 17-53-29.webm](https://github.com/user-attachments/assets/4e22c039-0efe-4e6f-856c-ac8cc03a5c11)
+
 
 ## Features
 
