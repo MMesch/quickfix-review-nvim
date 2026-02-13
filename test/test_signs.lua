@@ -31,36 +31,45 @@ local function has_sign_on_line(bufnr, lnum)
   return #get_extmarks_on_line(bufnr, lnum) > 0
 end
 
--- Get the sign text from extmarks on a line (maps back to sign name for compatibility)
-local function get_sign_name_on_line(bufnr, lnum)
+-- Get the raw sign text from extmarks on a line (trimmed)
+local function get_sign_text_on_line(bufnr, lnum)
   local marks = get_extmarks_on_line(bufnr, lnum)
   if #marks > 0 then
     local details = marks[1][4]
     local sign_text = details and details.sign_text
     if not sign_text then return nil end
     -- Trim whitespace from sign_text (Neovim pads to 2 cells)
-    sign_text = sign_text:gsub('%s+$', ''):gsub('^%s+', '')
-    -- Map sign text back to sign name (test config uses ASCII: !, S, N, +, Q, I, |)
-    local sign_mapping = {
-      ['!'] = 'review_issue',
-      ['S'] = 'review_suggestion',
-      ['N'] = 'review_note',
-      ['+'] = 'review_praise',
-      ['Q'] = 'review_question',
-      ['I'] = 'review_insight',
-    }
-    if sign_text == '│' then
-      -- Check highlight to determine continuation type
-      local hl = details.sign_hl_group
-      if hl == 'DiagnosticError' then return 'review_issue_continuation'
-      elseif hl == 'DiagnosticWarn' then return 'review_suggestion_continuation'
-      elseif hl == 'DiagnosticInfo' then return 'review_note_continuation'
-      elseif hl == 'DiagnosticHint' then return 'review_praise_continuation'
-      end
-    end
-    return sign_mapping[sign_text]
+    return sign_text:gsub('%s+$', ''):gsub('^%s+', '')
   end
   return nil
+end
+
+-- Get the sign text from extmarks on a line (maps back to sign name for compatibility)
+local function get_sign_name_on_line(bufnr, lnum)
+  local sign_text = get_sign_text_on_line(bufnr, lnum)
+  if not sign_text then return nil end
+
+  -- Map sign text back to sign name (test config uses ASCII: !, S, N, +, Q, I, |)
+  local sign_mapping = {
+    ['!'] = 'review_issue',
+    ['S'] = 'review_suggestion',
+    ['N'] = 'review_note',
+    ['+'] = 'review_praise',
+    ['Q'] = 'review_question',
+    ['I'] = 'review_insight',
+  }
+  if sign_text == '│' then
+    -- Check highlight to determine continuation type
+    local marks = get_extmarks_on_line(bufnr, lnum)
+    local details = marks[1][4]
+    local hl = details.sign_hl_group
+    if hl == 'DiagnosticError' then return 'review_issue_continuation'
+    elseif hl == 'DiagnosticWarn' then return 'review_suggestion_continuation'
+    elseif hl == 'DiagnosticInfo' then return 'review_note_continuation'
+    elseif hl == 'DiagnosticHint' then return 'review_praise_continuation'
+    end
+  end
+  return sign_mapping[sign_text]
 end
 
 -- Helper to clear extmarks (replaces sign_unplace)
@@ -207,6 +216,114 @@ assert.run_test('different comment types use correct signs', function()
   assert.equals(get_sign_name_on_line(bufnr, 8), 'review_praise', 'praise sign')
   assert.equals(get_sign_name_on_line(bufnr, 10), 'review_question', 'question sign')
   assert.equals(get_sign_name_on_line(bufnr, 12), 'review_insight', 'insight sign')
+end)
+
+assert.run_test('multiple comments on same line shows count', function()
+  vim.fn.setqflist({})
+  clear_extmarks(vim.fn.bufnr())
+  local bufnr = vim.fn.bufnr()
+
+  -- Add two comments on line 5
+  vim.fn.cursor(5, 1)
+  qf.add_comment('ISSUE')
+  vim.fn.cursor(5, 1)
+  qf.add_comment('NOTE')
+
+  -- Should show "2" instead of a symbol
+  local sign_text = get_sign_text_on_line(bufnr, 5)
+  assert.equals(sign_text, '2', 'two comments shows count 2')
+
+  -- Add a third comment
+  vim.fn.cursor(5, 1)
+  qf.add_comment('SUGGESTION')
+
+  sign_text = get_sign_text_on_line(bufnr, 5)
+  assert.equals(sign_text, '3', 'three comments shows count 3')
+end)
+
+assert.run_test('single comment shows symbol not count', function()
+  vim.fn.setqflist({})
+  clear_extmarks(vim.fn.bufnr())
+  local bufnr = vim.fn.bufnr()
+
+  vim.fn.cursor(5, 1)
+  qf.add_comment('ISSUE')
+
+  -- Should show symbol, not "1"
+  local sign_text = get_sign_text_on_line(bufnr, 5)
+  assert.equals(sign_text, '!', 'single comment shows symbol not count')
+end)
+
+assert.run_test('overlapping multiline comments show count on shared lines', function()
+  vim.fn.setqflist({})
+  clear_extmarks(vim.fn.bufnr())
+  local bufnr = vim.fn.bufnr()
+
+  -- Add two overlapping multiline comments
+  -- Comment 1: lines 3-6 (ISSUE) -> start=3, end=6, continuation=4,5
+  -- Comment 2: lines 5-8 (NOTE)  -> start=5, end=8, continuation=6,7
+  qf.add_comment('ISSUE', { 3, 6 })
+  qf.add_comment('NOTE', { 5, 8 })
+
+  -- Line 3: only comment 1 starts here (1 start/end) -> symbol
+  assert.equals(get_sign_text_on_line(bufnr, 3), '!', 'line 3 shows issue symbol')
+
+  -- Line 4: only continuation for comment 1 -> continuation symbol
+  assert.equals(get_sign_text_on_line(bufnr, 4), '│', 'line 4 shows continuation')
+
+  -- Line 5: comment 2 starts here (1 start/end), comment 1 continues
+  -- Shows highest priority type's symbol (ISSUE > NOTE)
+  assert.equals(get_sign_text_on_line(bufnr, 5), '!', 'line 5 shows highest priority symbol')
+
+  -- Line 6: comment 1 ends here (1 start/end), comment 2 continues -> symbol
+  assert.equals(get_sign_text_on_line(bufnr, 6), '!', 'line 6 shows issue symbol (1 end)')
+
+  -- Line 7: only continuation for comment 2 -> continuation symbol
+  assert.equals(get_sign_text_on_line(bufnr, 7), '│', 'line 7 shows continuation')
+
+  -- Line 8: only comment 2 ends here (1 start/end) -> symbol
+  assert.equals(get_sign_text_on_line(bufnr, 8), 'N', 'line 8 shows note symbol')
+end)
+
+assert.run_test('two comments starting on same line shows count', function()
+  vim.fn.setqflist({})
+  clear_extmarks(vim.fn.bufnr())
+  local bufnr = vim.fn.bufnr()
+
+  -- Two multiline comments both starting on line 3
+  qf.add_comment('ISSUE', { 3, 5 })
+  qf.add_comment('NOTE', { 3, 7 })
+
+  -- Line 3: both comments start here (2 start/end) -> count
+  assert.equals(get_sign_text_on_line(bufnr, 3), '2', 'line 3 shows count 2')
+
+  -- Line 5: comment 1 ends here (1 start/end) -> symbol
+  assert.equals(get_sign_text_on_line(bufnr, 5), '!', 'line 5 shows issue symbol')
+
+  -- Line 7: comment 2 ends here (1 start/end) -> symbol
+  assert.equals(get_sign_text_on_line(bufnr, 7), 'N', 'line 7 shows note symbol')
+end)
+
+assert.run_test('deleting one of multiple comments updates count', function()
+  vim.fn.setqflist({})
+  clear_extmarks(vim.fn.bufnr())
+  local bufnr = vim.fn.bufnr()
+
+  -- Add three comments on line 5
+  vim.fn.cursor(5, 1)
+  qf.add_comment('ISSUE')
+  vim.fn.cursor(5, 1)
+  qf.add_comment('NOTE')
+  vim.fn.cursor(5, 1)
+  qf.add_comment('SUGGESTION')
+
+  assert.equals(get_sign_text_on_line(bufnr, 5), '3', 'three comments shows 3')
+
+  -- Delete one comment (deletes all on that line in current impl)
+  qf.delete_comment({ 5, 5 })
+
+  -- After delete, no signs should remain (delete removes all on line)
+  assert.falsy(has_sign_on_line(bufnr, 5), 'no sign after delete')
 end)
 
 test_helper.cleanup_test_environment()

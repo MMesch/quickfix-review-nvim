@@ -7,13 +7,15 @@ This directory contains tests for the quickfix-review plugin.
 ### Run All Tests
 
 ```bash
-nvim --headless -c 'lua dofile("test/run.lua")' -c 'qa!'
+nvim --headless -c 'lua dofile("test/run.lua")' -c 'qall'
 ```
 
 Check the exit code to determine pass/fail:
 ```bash
-nvim --headless -c 'lua dofile("test/run.lua")' -c 'qa!' && echo "PASSED" || echo "FAILED"
+nvim --headless -c 'lua dofile("test/run.lua")' -c 'qall' && echo "PASSED" || echo "FAILED"
 ```
+
+Note: Use `qall` instead of `qa!` to avoid bash history expansion issues with the `!` character.
 
 **Important**: The tests add the current directory to the runtime path to ensure the local plugin version is loaded. This is necessary to test changes to the plugin code.
 
@@ -25,16 +27,16 @@ The test output includes a "Plugin version check" line that shows the first line
 
 ```bash
 # Utility function tests
-nvim --headless -c 'lua dofile("test/test_utils.lua")' -c 'qa!'
+nvim --headless -c 'lua dofile("test/test_utils.lua")' -c 'qall'
 
 # Comment add/delete tests
-nvim --headless -c 'lua dofile("test/test_comments.lua")' -c 'qa!'
+nvim --headless -c 'lua dofile("test/test_comments.lua")' -c 'qall'
 
 # Sign placement tests
-nvim --headless -c 'lua dofile("test/test_signs.lua")' -c 'qa!'
+nvim --headless -c 'lua dofile("test/test_signs.lua")' -c 'qall'
 
 # Save/load persistence tests
-nvim --headless -c 'lua dofile("test/test_persistence.lua")' -c 'qa!'
+nvim --headless -c 'lua dofile("test/test_persistence.lua")' -c 'qall'
 ```
 
 ### Interactive Debugging
@@ -120,7 +122,7 @@ The test environment:
 The test runner exits with code 1 if any tests fail:
 
 ```bash
-nvim --headless -c 'lua dofile("test/run.lua")' -c 'qa!'
+nvim --headless -c 'lua dofile("test/run.lua")' -c 'qall'
 exit_code=$?
 if [ $exit_code -ne 0 ]; then
   echo "Tests failed!"

@@ -124,7 +124,7 @@ function M.add_comment(comment_type, range)
     vim.fn.setqflist({}, 'a', { title = 'Code Review Comments' })
 
     if not utils.is_special_buffer() then
-      utils.place_comment_signs(vim.fn.bufnr(), comment_type, start_line, end_line)
+      utils.refresh_buffer_signs(vim.fn.bufnr(), file)
     end
 
     local display_file = vim.fn.fnamemodify(file, ':.')
@@ -225,14 +225,15 @@ function M.load_review()
   vim.fn.setqflist(qf_list, 'r')
   vim.fn.setqflist({}, 'a', { title = 'Code Review Comments' })
 
-  -- Restore signs for loaded comments
+  -- Restore signs for loaded comments (refresh each affected buffer once)
+  local refreshed_buffers = {}
   for _, item in ipairs(qf_list) do
-    local comment_type = utils.parse_comment_type(item.text)
     local filename = item.filename
     if filename and type(filename) == 'string' and filename ~= '' then
       local bufnr = vim.fn.bufnr(filename)
-      if bufnr ~= -1 then
-        utils.place_comment_signs(bufnr, comment_type, item.lnum, item.end_lnum or item.lnum)
+      if bufnr ~= -1 and not refreshed_buffers[bufnr] then
+        refreshed_buffers[bufnr] = true
+        utils.refresh_buffer_signs(bufnr, filename)
       end
     end
   end
@@ -328,20 +329,9 @@ function M.delete_comment(range)
     vim.fn.setqflist(new_qf_list, 'r')
     vim.fn.setqflist({}, 'a', { title = 'Code Review Comments' })
     
-    -- Remove and re-add signs for proper visualization
+    -- Refresh signs for proper visualization
     if not utils.is_special_buffer() then
-      local bufnr = vim.fn.bufnr()
-      -- Clear extmarks for this buffer
-      vim.api.nvim_buf_clear_namespace(bufnr, utils.get_ns_id(), 0, -1)
-
-      -- Re-add signs for remaining comments in this file
-      for _, item in ipairs(new_qf_list) do
-        local item_file = item.filename or vim.fn.bufname(item.bufnr)
-        if utils.files_match(item_file, file) then
-          local comment_type = utils.parse_comment_type(item.text)
-          utils.place_comment_signs(bufnr, comment_type, item.lnum, item.end_lnum or item.lnum)
-        end
-      end
+      utils.refresh_buffer_signs(vim.fn.bufnr(), file)
     end
     
     local display_file = vim.fn.fnamemodify(file, ':.')
