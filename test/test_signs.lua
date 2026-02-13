@@ -326,6 +326,47 @@ assert.run_test('deleting one of multiple comments updates count', function()
   assert.falsy(has_sign_on_line(bufnr, 5), 'no sign after delete')
 end)
 
+assert.run_test('review signs coexist with git gutter signs when signcolumn >= 2', function()
+  vim.fn.setqflist({})
+  clear_extmarks(vim.fn.bufnr())
+  local bufnr = vim.fn.bufnr()
+
+  -- Save original signcolumn and set to yes:2
+  local orig_signcolumn = vim.wo.signcolumn
+  vim.wo.signcolumn = "yes:2"
+  vim.wo.number = false
+
+  -- Simulate a git gutter sign (like gitsigns) with higher priority
+  local git_ns = vim.api.nvim_create_namespace("test_gitsigns")
+  vim.api.nvim_buf_set_extmark(bufnr, git_ns, 4, 0, {  -- line 5 (0-indexed: 4)
+    sign_text = "+",
+    sign_hl_group = "DiffAdd",
+    priority = 10,  -- gitsigns uses priority 6-10
+  })
+
+  -- Add a review comment on the same line (lower priority)
+  vim.fn.cursor(5, 1)
+  qf.add_comment('ISSUE')
+
+  vim.cmd("redraw!")
+
+  -- Check screen to see if both signs are visible
+  local screen_chars = ""
+  for col = 1, 6 do
+    screen_chars = screen_chars .. vim.fn.screenstring(5, col)
+  end
+
+  local has_git_sign = screen_chars:find("%+") ~= nil
+  local has_review_sign = screen_chars:find("!") ~= nil or screen_chars:find("⚠") ~= nil
+
+  -- Cleanup
+  vim.api.nvim_buf_clear_namespace(bufnr, git_ns, 0, -1)
+  vim.wo.signcolumn = orig_signcolumn
+
+  assert.truthy(has_git_sign, 'git sign visible on screen')
+  assert.truthy(has_review_sign, 'review sign visible on screen')
+end)
+
 test_helper.cleanup_test_environment()
 
 return assert
