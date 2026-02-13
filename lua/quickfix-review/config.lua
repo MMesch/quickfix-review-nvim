@@ -42,12 +42,6 @@ M.defaults = {
   -- Sign definitions (generated from comment_types, but can be overridden)
   signs = {},
 
-  -- Sign column slot (1-indexed). Set to a specific number (e.g., 2) to place
-  -- review signs in a dedicated column, allowing git gutter signs in another.
-  -- Requires signcolumn=yes:N or signcolumn=auto:N with N >= sign_column_slot.
-  -- nil = auto (Neovim chooses available slot)
-  sign_column_slot = nil,
-
   -- Export format strings
   export = {
     header = '# Code Review\n\n',

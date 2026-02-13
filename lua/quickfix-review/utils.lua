@@ -75,15 +75,11 @@ end
 
 -- Build extmark options helper
 local function make_extmark_opts(text, hl_group, prio)
-  local opts = {
+  return {
     sign_text = text,
     sign_hl_group = hl_group,
     priority = prio,
   }
-  if config.options.sign_column_slot then
-    opts.number = config.options.sign_column_slot
-  end
-  return opts
 end
 
 -- Place signs for a comment using extmarks (supports multiple signs per line)
